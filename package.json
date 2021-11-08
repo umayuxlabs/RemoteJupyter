@@ -1,0 +1,16 @@
+{
+  "name": "JupyterRemote",
+  "productName": "JupyterRemote",
+  "description": "Simple Jupyter Remote APP",
+  "keywords": [],
+  "main": "./main.js",
+  "version": "1.0.0",
+  "author": "Gustavo Arango",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "13.1.7",
+    "electron-packager": "^15.4.0"
+  }
+}
