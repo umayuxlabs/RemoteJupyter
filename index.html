@@ -63,7 +63,7 @@
               </thead>
             
               <tbody id='session-list'>
-                <tr v-for="i in item[1]" :key='i.session'>
+                <tr v-for="i in Object.values(item[1])" :key='i.session'>
                   <td>{{i.session}}</td>
                   <td>{{i.url}}</td>
                   <td>
