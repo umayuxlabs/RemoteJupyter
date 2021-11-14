@@ -7,30 +7,37 @@
 
 const button = document.querySelector('#connect');
 const nodename = document.querySelector('#nodename');
+const project = document.querySelector('#projectname');
+
 const url = document.querySelector('#url');
 
 var session_list = new Vue({
-    el: '#session-list',
+    el: '#ProjectsGroup',
     data: {
-      items: JSON.parse(localStorage.getItem('session_list')) == undefined ? []: JSON.parse(localStorage.getItem('session_list'))
+        items: JSON.parse(localStorage.getItem('project_items')) == undefined ? {}: JSON.parse(localStorage.getItem('project_items'))
     },
 
     methods: {
         run: function(item){
-            windowProxy = window.open('session.html?JupyterURL='+item.url + "&JupyterTitle="+item.session, item.session, 'minimizable=true')
+            windowProxy = window.open('session.html?JupyterURL='+item.url + "&JupyterTitle="+item.session + "&Project=" +item.project, item.project + '|' + item.session, 'minimizable=true')
         },
         remove: function(item){
 
-            session_list.items = session_list.items.filter((i)=>{
+            session_list.items[item.project] = session_list.items[item.project].filter((i)=>{
                 if (i == item){
-                    delete session_dict[i.session + i.url]
+                    delete session_dict[item.session + '|' + item.url + '|' + item.project]
                 }
                 
                 return i != item
             })
+            
+            // if ( Object.keys(session_list.items[item.project])[0] == undefined) {
+            //     delete session_list.items[item.project]
+            // }
 
-            localStorage.setItem('session_list', JSON.stringify(session_list.items))
+            localStorage.setItem('project_items', JSON.stringify(session_list.items))
             localStorage.setItem('session_dict', JSON.stringify(session_dict))
+            
         }
     }
 
@@ -41,17 +48,28 @@ var windowProxy = null;
 
 let session_dict = JSON.parse(localStorage.getItem('session_dict')) == undefined ? {}: JSON.parse(localStorage.getItem('session_dict')) 
 let session_items = []
+
+let project_items = JSON.parse(localStorage.getItem('project_items')) == undefined ? {}: JSON.parse(localStorage.getItem('project_items')) 
+
 function updateButton() {
-    windowProxy = window.open('session.html?JupyterURL='+url.value + "&JupyterTitle="+nodename.value, nodename.value, 'minimizable=true')
-    if(session_dict[nodename.value + url.value] == undefined){
-        session_list.items.push({session: nodename.value, url: url.value})
-        session_dict[nodename.value + url.value] = 0
+    windowProxy = window.open('session.html?JupyterURL='+url.value + "&JupyterTitle="+nodename.value + "&Project=" +project.value, nodename.value+'|'+project.value, 'minimizable=true')
 
+    if (session_dict[nodename.value + '|' + url.value + '|' + project.value] == undefined) {
+        
+        session_dict[nodename.value + '|' + url.value + '|' + project.value] = 0
+        
+        try {
+            project_items[project.value].push(
+                { session: nodename.value, url: url.value, project: project.value }
+            )
+        } catch (error) {
+            project_items[project.value] = [
+                { session: nodename.value, url: url.value, project: project.value }
+            ]
+        }
+        
         localStorage.setItem('session_dict', JSON.stringify(session_dict))
-        localStorage.setItem('session_list', JSON.stringify(session_list.items))
+        localStorage.setItem('project_items', JSON.stringify(project_items))
+        session_list.items = project_items
     }
-}
-
-function run_job(session, url){
-    console.log(session, url)
 }

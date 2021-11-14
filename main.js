@@ -7,8 +7,8 @@ app.commandLine.appendSwitch ("disable-http-cache");
 function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: '101vh',
-    height: '102vh',
+    width: 900,
+    height: 1000,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       webviewTag: true,
@@ -27,7 +27,7 @@ function createWindow () {
   })
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  mainWindow.webContents.openDevTools()
 }
 
 const isMac = process.platform === 'darwin'
