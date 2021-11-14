@@ -1,7 +1,7 @@
 {
-  "name": "JupyterRemote",
-  "productName": "JupyterRemote",
-  "description": "Simple Jupyter Remote APP",
+  "name": "Session-Manager",
+  "productName": "SessionManager",
+  "description": "Simple desktop app to wrap websites as desktop apps",
   "keywords": [],
   "main": "./main.js",
   "version": "1.0.0",

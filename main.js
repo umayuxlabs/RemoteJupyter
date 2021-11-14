@@ -27,7 +27,7 @@ function createWindow () {
   })
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 }
 
 const isMac = process.platform === 'darwin'
