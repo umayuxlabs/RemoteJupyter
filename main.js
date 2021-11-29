@@ -4,6 +4,21 @@ const path = require('path')
 
 app.commandLine.appendSwitch ("disable-http-cache");
 
+function fixPath() {
+	if (process.platform === 'win32') {
+		return;
+	}
+
+	process.env.PATH = [
+		'./node_modules/.bin',
+		'/.nodebrew/current/bin',
+		'/usr/local/bin',
+		process.env.PATH,
+	].join(':');
+}
+
+fixPath()
+
 function createWindow () {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -12,7 +27,10 @@ function createWindow () {
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       webviewTag: true,
-      nativeWindowOpen: false
+      nativeWindowOpen: false,
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true
     }
   })
   
@@ -134,8 +152,8 @@ const template = [
   }
 ]
 
-const menu = Menu.buildFromTemplate(template)
-Menu.setApplicationMenu(menu)
+// const menu = Menu.buildFromTemplate(template)
+// Menu.setApplicationMenu(menu)
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

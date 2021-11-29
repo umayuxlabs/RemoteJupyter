@@ -9,6 +9,11 @@ const button = document.querySelector('#connect');
 const nodename = document.querySelector('#nodename');
 const project = document.querySelector('#projectname');
 
+const { exec } = require('child_process');
+const { BrowserWindow } = require('electron').remote;
+const app = require('electron').remote.app
+var basepath = app.getAppPath();
+
 const url = document.querySelector('#url');
 
 var session_list = new Vue({
@@ -18,8 +23,9 @@ var session_list = new Vue({
     },
 
     methods: {
-        run: function(item){
-            windowProxy = window.open('session.html?JupyterURL='+item.url + "&JupyterTitle="+item.session + "&Project=" +item.project, item.project + '|' + item.session, 'minimizable=true')
+        run: function (item) {
+            create_session_window(item.url, item.session, item.project)
+            // windowProxy = window.open('session.html?JupyterURL='+item.url + "&JupyterTitle="+item.session + "&Project=" +item.project, item.project + '|' + item.session, 'minimizable=true')
         },
         remove: function(item){
             delete session_list.items[item.project][item.session]
@@ -36,14 +42,40 @@ var session_list = new Vue({
 
   })
 
+
+function create_session_window (url, name, project) {
+    // Create the browser window.
+    const mainWindow = new BrowserWindow({
+        width: 1200,
+        height: 1200,
+        webPreferences: {
+        webviewTag: true,
+        nativeWindowOpen: false,
+        nodeIntegration: false,
+        contextIsolation: false
+        }
+    })
+
+    mainWindow.loadFile(
+        'session.html',
+        { query: { JupyterURL: url, JupyterTitle: name, Project: project, } }
+    )
+
+}
+
+
+
 button.addEventListener('click', updateButton);
-var windowProxy = null;
 
 session_list.items = JSON.parse(localStorage.getItem('project_items')) == undefined ? {}: JSON.parse(localStorage.getItem('project_items'))
 
 function updateButton() {
-    windowProxy = window.open('session.html?JupyterURL='+url.value + "&JupyterTitle="+nodename.value + "&Project=" +project.value, nodename.value+'|'+project.value, 'minimizable=true')
 
+
+    // window.open('session.html?JupyterURL='+url.value + "&JupyterTitle="+nodename.value + "&Project=" +project.value, nodename.value+'|'+project.value, 'minimizable=true')
+    create_session_window(url.value, nodename.value, project.value)
+    
+    
     if (session_list.items[project.value] == undefined) {
         session_list.items[project.value] = {}
     }
